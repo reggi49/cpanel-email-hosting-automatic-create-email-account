@@ -1,0 +1,22 @@
+services:
+  s-chromium:
+    image: selenium/standalone-chromium:latest
+    container_name: s-chromium
+    shm_size: 2g
+    restart: unless-stopped
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+
+  createuser:
+    build:
+      context: ./createuser
+    container_name: s-createuser
+    working_dir: /app
+    volumes:
+      - ./createuser:/app          # live-mount biar bisa edit & rerun tanpa rebuild
+    depends_on:
+      - s-chromium
+    env_file:
+      - ./createuser/.env          # simpan kredensial di sini (jgn commit)
+    command: sleep infinity        # biar kontainer tetap hidup untuk debug berulang
